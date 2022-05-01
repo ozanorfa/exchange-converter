@@ -10,5 +10,16 @@ class ConversionRates {
     @SerializedName("SEK" ) var SEK : Double? = null
     @SerializedName("CAD" ) var CAD : Double? = null
     @SerializedName("GBP" ) var GBP : Double? = null
+}
 
+fun getCurrencyWithId(id: Int) : String{
+    return when(id){
+        0 -> "USD"
+        1 -> "EUR"
+        2 -> "TRY"
+        3 -> "SEK"
+        4 -> "CAD"
+        5 -> "GBP"
+        else -> ""
+    }
 }

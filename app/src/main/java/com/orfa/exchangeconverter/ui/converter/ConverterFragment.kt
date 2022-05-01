@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
+import com.orfa.exchangeconverter.MainActivity
 import com.orfa.exchangeconverter.data.ConversionRates
 import com.orfa.exchangeconverter.databinding.ConverterFragmentBinding
 import com.orfa.exchangeconverter.models.CurrencyService
@@ -45,6 +46,38 @@ class ConverterFragment : BaseFragment() {
         binding.lifecycleOwner = this
         binding.vm = viewModel
 
+        viewModelEvents()
+
+
+        val isFirstRun = sharedPreferences.getBoolean("isFirstRun", true)
+
+        if (isFirstRun){
+            viewModel.getAllValues()
+        }
+        else {
+            val lastCallDateStr = sharedPreferences.getString("callDate","")
+            val lastCallDate = stringDatetoDate(lastCallDateStr)
+
+            val currentDate = Date()
+
+            val diff: Long = (currentDate.time - lastCallDate.time) / 1000 / 60 / 60
+
+            if (diff >= 24){
+                viewModel.getAllValues()
+            }
+            else {
+               getValuesFromShared()
+            }
+        }
+
+
+
+
+        return binding.root
+    }
+
+    private fun viewModelEvents() {
+
         viewModel.currencyRates.observe(viewLifecycleOwner, Observer {
 
             if (viewModel.isServiceCall.value == true){
@@ -63,31 +96,24 @@ class ConverterFragment : BaseFragment() {
 
         })
 
-        val isFirstRun = sharedPreferences.getBoolean("isFirstRun", true)
+        binding.btnConvert.setOnClickListener(View.OnClickListener {
+            hideKeyboard(activity as MainActivity)
+            binding.etAmount.clearFocus()
+        })
 
-        if (isFirstRun){
-            viewModel.getAllValues()
+
+        val spinner1 = binding.spnFirstCountry
+        val spinner2 = binding.spnSecondCountry
+
+        spinner1.setOnClickListener {
+            hideKeyboard(activity as MainActivity)
         }
-        else {
-            val lastCallDateStr = sharedPreferences.getString("callDate","")
-            val lastCallDate = stringDatetoDate(lastCallDateStr)
-
-            val currentDate = Date()
-
-            val diff: Long = (currentDate.time - lastCallDate.time) / 1000 / 60 / 60
-
-            if (diff > 24){
-                viewModel.getAllValues()
-            }
-            else {
-               getValuesFromShared()
-            }
+        spinner2.setOnClickListener {
+            hideKeyboard(activity as MainActivity)
         }
 
 
 
-
-        return binding.root
     }
 
     private fun getValuesFromShared() {
@@ -97,8 +123,6 @@ class ConverterFragment : BaseFragment() {
         val json: String? = sharedPreferences.getString("conversionObj", "")
         val obj: ConversionRates = gson.fromJson(json, ConversionRates::class.java)
         viewModel.currencyRates.postValue(obj)
-
-
     }
 
 }
