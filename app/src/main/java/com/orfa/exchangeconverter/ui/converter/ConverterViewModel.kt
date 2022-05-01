@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.orfa.exchangeconverter.data.ConversionRates
 import com.orfa.exchangeconverter.data.CurrencyResponse
 import com.orfa.exchangeconverter.data.getCurrencyWithId
+import com.orfa.exchangeconverter.data.getCurrrencyList
 import com.orfa.exchangeconverter.models.CurrencyService
 import com.orfa.exchangeconverter.models.MainRepository
 import com.orfa.exchangeconverter.ui.base.BaseViewModel
@@ -21,12 +22,13 @@ class ConverterViewModel(private val repository: MainRepository) : BaseViewModel
     val isServiceCall = MutableLiveData<Boolean>()
     var job: Job? = null
 
-    var selectedFirstCur = ""
+    var selectedFirstCur  = ""
     var selectedSecondCur = ""
 
     init {
         isServiceCall.value = false
     }
+
 
     val spinner1Listener = object : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -42,7 +44,7 @@ class ConverterViewModel(private val repository: MainRepository) : BaseViewModel
         }
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            selectedSecondCur = getCurrencyWithId(position)
+            selectedSecondCur =  getCurrencyWithId(position)
         }
     }
 

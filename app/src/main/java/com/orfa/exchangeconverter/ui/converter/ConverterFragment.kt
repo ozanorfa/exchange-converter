@@ -1,18 +1,25 @@
 package com.orfa.exchangeconverter.ui.converter
 
+import android.R
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.orfa.exchangeconverter.MainActivity
 import com.orfa.exchangeconverter.data.ConversionRates
+import com.orfa.exchangeconverter.data.getCurrencyWithId
+import com.orfa.exchangeconverter.data.getCurrrencyList
 import com.orfa.exchangeconverter.databinding.ConverterFragmentBinding
 import com.orfa.exchangeconverter.models.CurrencyService
 import com.orfa.exchangeconverter.models.MainRepository
@@ -49,6 +56,7 @@ class ConverterFragment : BaseFragment() {
         viewModelEvents()
 
 
+
         val isFirstRun = sharedPreferences.getBoolean("isFirstRun", true)
 
         if (isFirstRun){
@@ -69,9 +77,6 @@ class ConverterFragment : BaseFragment() {
                getValuesFromShared()
             }
         }
-
-
-
 
         return binding.root
     }
@@ -96,23 +101,83 @@ class ConverterFragment : BaseFragment() {
 
         })
 
+        binding.etAmount.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
         binding.btnConvert.setOnClickListener(View.OnClickListener {
             hideKeyboard(activity as MainActivity)
             binding.etAmount.clearFocus()
+
+            val inputStr  = binding.etAmount.text.toString().trim()
+            if (viewModel.currencyRates.value == null || inputStr.isBlank() || inputStr.toIntOrNull() == null)
+                return@OnClickListener
+
+            var firstAmounth: Double
+            var finalAmounth = 0.0
+            val input = inputStr.toInt()
+            val firstCurrency  = viewModel.selectedFirstCur
+            val secondCurrency = viewModel.selectedSecondCur
+
+            val list = viewModel.currencyRates.value
+
+            firstAmounth = when(firstCurrency) {
+                "USD" ->  input / list!!.USD!!
+                "EUR" ->  input / list!!.EUR!!
+                "TRY" ->  input / list!!.TRY!!
+                "SEK" ->  input / list!!.SEK!!
+                "CAD" ->  input / list!!.CAD!!
+                "GBP" ->  input / list!!.GBP!!
+                else  -> 0.0
+            }
+
+            finalAmounth = when(secondCurrency) {
+                "USD" ->  firstAmounth * list!!.USD!!
+                "EUR" ->  firstAmounth * list!!.EUR!!
+                "TRY" ->  firstAmounth * list!!.TRY!!
+                "SEK" ->  firstAmounth * list!!.SEK!!
+                "CAD" ->  firstAmounth * list!!.CAD!!
+                "GBP" ->  firstAmounth * list!!.GBP!!
+                else  -> 0.0
+            }
+
+
         })
 
 
         val spinner1 = binding.spnFirstCountry
         val spinner2 = binding.spnSecondCountry
 
-        spinner1.setOnClickListener {
+        val currencyList = getCurrrencyList()
+
+        spinner1.setOnTouchListener { v, event ->
             hideKeyboard(activity as MainActivity)
+
+            v?.onTouchEvent(event) ?: true
         }
-        spinner2.setOnClickListener {
+        spinner2.setOnTouchListener { v, event ->
             hideKeyboard(activity as MainActivity)
+
+            v?.onTouchEvent(event) ?: true
         }
 
+        val arrayAdapter =
+            activity?.let { ArrayAdapter(it, R.layout.simple_spinner_dropdown_item, currencyList) }
 
+        spinner1.adapter = arrayAdapter
+        spinner2.adapter = arrayAdapter
 
     }
 
@@ -122,6 +187,8 @@ class ConverterFragment : BaseFragment() {
 
         val json: String? = sharedPreferences.getString("conversionObj", "")
         val obj: ConversionRates = gson.fromJson(json, ConversionRates::class.java)
+
+
         viewModel.currencyRates.postValue(obj)
     }
 
