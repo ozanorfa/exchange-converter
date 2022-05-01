@@ -24,6 +24,7 @@ import com.orfa.exchangeconverter.databinding.ConverterFragmentBinding
 import com.orfa.exchangeconverter.models.CurrencyService
 import com.orfa.exchangeconverter.models.MainRepository
 import com.orfa.exchangeconverter.ui.base.BaseFragment
+import java.text.DecimalFormat
 import java.util.*
 
 
@@ -103,7 +104,7 @@ class ConverterFragment : BaseFragment() {
 
         binding.etAmount.addTextChangedListener(object :TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                TODO("Not yet implemented")
+
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -112,7 +113,7 @@ class ConverterFragment : BaseFragment() {
             }
 
             override fun afterTextChanged(p0: Editable?) {
-                TODO("Not yet implemented")
+
             }
 
         })
@@ -122,12 +123,12 @@ class ConverterFragment : BaseFragment() {
             binding.etAmount.clearFocus()
 
             val inputStr  = binding.etAmount.text.toString().trim()
-            if (viewModel.currencyRates.value == null || inputStr.isBlank() || inputStr.toIntOrNull() == null)
+            if (viewModel.currencyRates.value == null || inputStr.isBlank() || inputStr.toDoubleOrNull() == null)
                 return@OnClickListener
 
             var firstAmounth: Double
             var finalAmounth = 0.0
-            val input = inputStr.toInt()
+            val input = inputStr.toDouble()
             val firstCurrency  = viewModel.selectedFirstCur
             val secondCurrency = viewModel.selectedSecondCur
 
@@ -153,6 +154,10 @@ class ConverterFragment : BaseFragment() {
                 else  -> 0.0
             }
 
+            val df = DecimalFormat("#.##")
+
+
+            binding.tvFinal.setText("Final Amount: ${df.format(finalAmounth)} ${secondCurrency}")
 
         })
 
