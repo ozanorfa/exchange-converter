@@ -22,11 +22,16 @@ class ConverterViewModel(private val repository: MainRepository) : BaseViewModel
     val isServiceCall = MutableLiveData<Boolean>()
     var job: Job? = null
 
-    var selectedFirstCur  = ""
-    var selectedSecondCur = ""
+    var selectedFirstCur  = MutableLiveData<String>()
+    var selectedSecondCur = MutableLiveData<String>()
+
+    val finalValue = MutableLiveData<String>()
 
     init {
         isServiceCall.value = false
+        selectedFirstCur.value = ""
+        selectedSecondCur.value = ""
+        finalValue.value = ""
     }
 
 
@@ -35,7 +40,8 @@ class ConverterViewModel(private val repository: MainRepository) : BaseViewModel
         }
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            selectedFirstCur = getCurrencyWithId(position)
+            selectedFirstCur.postValue(getCurrencyWithId(position))
+            finalValue.postValue("")
         }
     }
 
@@ -44,7 +50,8 @@ class ConverterViewModel(private val repository: MainRepository) : BaseViewModel
         }
 
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            selectedSecondCur =  getCurrencyWithId(position)
+            selectedSecondCur.postValue(getCurrencyWithId(position))
+            finalValue.postValue("")
         }
     }
 

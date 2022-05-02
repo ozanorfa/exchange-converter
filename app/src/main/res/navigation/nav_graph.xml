@@ -10,6 +10,25 @@
         android:name="com.orfa.exchangeconverter.ui.converter.ConverterFragment"
         android:label="Converter Fragment"
         tools:layout="@layout/converter_fragment">
+        <action
+            android:id="@+id/action_confirm_dialog"
+            app:destination="@id/ConfirmDialogFragment"
+            app:exitAnim="@anim/slide_out_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
+
+    <dialog
+        android:id="@+id/ConfirmDialogFragment"
+        android:name="com.orfa.exchangeconverter.ui.confirmation.ConfirmationDialogFragment"
+        android:label="ConfirmationDialogFragment"
+        tools:layout="@layout/confirmation_dialog_fragment" >
+        <argument
+            android:name="title"
+            android:defaultValue=""
+            app:argType="string" />
+    </dialog>
+
+
+
 
 </navigation>

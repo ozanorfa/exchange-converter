@@ -8,17 +8,15 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.orfa.exchangeconverter.MainActivity
 import com.orfa.exchangeconverter.data.ConversionRates
-import com.orfa.exchangeconverter.data.getCurrencyWithId
 import com.orfa.exchangeconverter.data.getCurrrencyList
 import com.orfa.exchangeconverter.databinding.ConverterFragmentBinding
 import com.orfa.exchangeconverter.models.CurrencyService
@@ -36,6 +34,12 @@ class ConverterFragment : BaseFragment() {
 
     private val gson = Gson()
     private val retrofitService = CurrencyService.getInstance()
+
+    var firstCurrency  = ""
+    var secondCurrency = ""
+
+    var finalAmount: String = "0.0"
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +88,7 @@ class ConverterFragment : BaseFragment() {
 
     private fun viewModelEvents() {
 
-        viewModel.currencyRates.observe(viewLifecycleOwner, Observer {
+        viewModel.currencyRates.observe(viewLifecycleOwner) {
 
             if (viewModel.isServiceCall.value == true){
 
@@ -96,11 +100,22 @@ class ConverterFragment : BaseFragment() {
                 editor.putString("conversionObj", json)
                 editor.apply()
             }
-        })
+        }
 
-        viewModel.errorMessage.observe(viewLifecycleOwner, Observer {
+        viewModel.errorMessage.observe(viewLifecycleOwner) {
 
-        })
+
+        }
+
+        viewModel.selectedFirstCur.observe(viewLifecycleOwner) {
+
+            firstCurrency = it
+        }
+
+        viewModel.selectedSecondCur.observe(viewLifecycleOwner) {
+
+            secondCurrency = it
+        }
 
         binding.etAmount.addTextChangedListener(object :TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -109,6 +124,42 @@ class ConverterFragment : BaseFragment() {
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
+                val inputStr  = p0.toString()
+                if (viewModel.currencyRates.value == null || inputStr.isBlank() || inputStr.toDoubleOrNull() == null){
+                    viewModel.finalValue.postValue("")
+                    return
+                }
+
+                val firstAmount: Double
+
+                val input = inputStr.toDouble()
+
+                val list = viewModel.currencyRates.value
+
+                firstAmount = when(firstCurrency) {
+                    "USD" ->  input / list!!.USD!!
+                    "EUR" ->  input / list!!.EUR!!
+                    "TRY" ->  input / list!!.TRY!!
+                    "SEK" ->  input / list!!.SEK!!
+                    "CAD" ->  input / list!!.CAD!!
+                    "GBP" ->  input / list!!.GBP!!
+                    else  -> 0.0
+                }
+
+                val tempFinalAmount = when(secondCurrency) {
+                    "USD" ->  firstAmount * list!!.USD!!
+                    "EUR" ->  firstAmount * list!!.EUR!!
+                    "TRY" ->  firstAmount * list!!.TRY!!
+                    "SEK" ->  firstAmount * list!!.SEK!!
+                    "CAD" ->  firstAmount * list!!.CAD!!
+                    "GBP" ->  firstAmount * list!!.GBP!!
+                    else  -> 0.0
+                }
+
+                val df = DecimalFormat("#.##")
+                finalAmount = df.format(tempFinalAmount).toString()
+
+                viewModel.finalValue.postValue("Final Amount: $finalAmount $secondCurrency")
 
             }
 
@@ -122,45 +173,13 @@ class ConverterFragment : BaseFragment() {
             hideKeyboard(activity as MainActivity)
             binding.etAmount.clearFocus()
 
-            val inputStr  = binding.etAmount.text.toString().trim()
-            if (viewModel.currencyRates.value == null || inputStr.isBlank() || inputStr.toDoubleOrNull() == null)
-                return@OnClickListener
-
-            var firstAmounth: Double
-            var finalAmounth = 0.0
-            val input = inputStr.toDouble()
-            val firstCurrency  = viewModel.selectedFirstCur
-            val secondCurrency = viewModel.selectedSecondCur
-
-            val list = viewModel.currencyRates.value
-
-            firstAmounth = when(firstCurrency) {
-                "USD" ->  input / list!!.USD!!
-                "EUR" ->  input / list!!.EUR!!
-                "TRY" ->  input / list!!.TRY!!
-                "SEK" ->  input / list!!.SEK!!
-                "CAD" ->  input / list!!.CAD!!
-                "GBP" ->  input / list!!.GBP!!
-                else  -> 0.0
-            }
-
-            finalAmounth = when(secondCurrency) {
-                "USD" ->  firstAmounth * list!!.USD!!
-                "EUR" ->  firstAmounth * list!!.EUR!!
-                "TRY" ->  firstAmounth * list!!.TRY!!
-                "SEK" ->  firstAmounth * list!!.SEK!!
-                "CAD" ->  firstAmounth * list!!.CAD!!
-                "GBP" ->  firstAmounth * list!!.GBP!!
-                else  -> 0.0
-            }
-
-            val df = DecimalFormat("#.##")
+            var popUpText = "You are about to get $finalAmount $secondCurrency for ${binding.etAmount.text.toString().trim()} $firstCurrency. Do you approve?"
 
 
-            binding.tvFinal.setText("Final Amount: ${df.format(finalAmounth)} ${secondCurrency}")
-
+            val action = ConverterFragmentDirections.actionConfirmDialog()
+            action.title = popUpText
+            findNavController().navigate(action)
         })
-
 
         val spinner1 = binding.spnFirstCountry
         val spinner2 = binding.spnSecondCountry
@@ -183,6 +202,7 @@ class ConverterFragment : BaseFragment() {
 
         spinner1.adapter = arrayAdapter
         spinner2.adapter = arrayAdapter
+
 
     }
 

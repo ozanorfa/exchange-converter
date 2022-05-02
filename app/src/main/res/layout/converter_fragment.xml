@@ -41,24 +41,24 @@
 
             <Spinner
                 android:id="@+id/spnFirstCountry"
-                android:layout_width="150dp"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="30dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="10dp"
-                android:text="First Country"
                 android:spinnerMode="dropdown"
+                android:text="First Country"
                 android:textColor="@android:color/darker_gray"
                 app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintRight_toLeftOf="@+id/spnSecondCountry"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView"
-                tools:setOnItemSelectedListener="@{vm.spinner1Listener}"/>
+                tools:setOnItemSelectedListener="@{vm.spinner1Listener}" />
 
 
             <Spinner
                 android:id="@+id/spnSecondCountry"
-                android:layout_width="150dp"
+                android:layout_width="160dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="30dp"
@@ -68,7 +68,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/spnFirstCountry"
                 app:layout_constraintTop_toTopOf="@+id/spnFirstCountry"
-                tools:setOnItemSelectedListener="@{vm.spinner2Listener}"/>
+                tools:setOnItemSelectedListener="@{vm.spinner2Listener}" />
 
 
             <EditText
@@ -84,10 +84,10 @@
                 android:hint="Amount"
                 android:importantForAutofill="no"
                 android:inputType="number"
+                android:maxLength="10"
                 android:paddingStart="20dp"
                 android:paddingEnd="20dp"
-                android:maxLength="10"
-                android:textSize="16sp"
+                android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/spnSecondCountry"
@@ -101,6 +101,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="35dp"
                 android:gravity="center"
+                android:text="@{vm.finalValue}"
                 android:textColor="@color/main_blue"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
