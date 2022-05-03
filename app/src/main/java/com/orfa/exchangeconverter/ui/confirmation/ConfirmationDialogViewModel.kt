@@ -12,6 +12,8 @@ class ConfirmationDialogViewModel : ViewModel() {
         navigateNext.postValue(true)
     }
 
+
+
     fun onCancel() {
         isCancelled.postValue(true)
     }

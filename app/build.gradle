@@ -58,8 +58,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$view_model_live_data_version"
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$view_model_live_data_version"
 
-    implementation 'androidx.recyclerview:recyclerview:1.2.1'
-
     //Fragment
     def fragment_version = "1.4.1"
     implementation "androidx.fragment:fragment-ktx:$fragment_version"
