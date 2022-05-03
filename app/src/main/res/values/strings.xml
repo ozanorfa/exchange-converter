@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">Exchange Converter</string>
+    <string name="currency_converter">Currency Converter</string>
+    <string name="first_country">First Country</string>
+    <string name="second_country">Second Country</string>
+    <string name="amount">Amount</string>
+    <string name="convert">Convert</string>
+    <string name="confirm_operation">Confirm Operation</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="success">Success</string>
+    <string name="back_to_exchange">Back to Exchange</string>
 </resources>

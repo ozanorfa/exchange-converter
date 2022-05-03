@@ -30,12 +30,12 @@ class ConverterFragment : BaseFragment() {
 
     private lateinit var viewModel: ConverterViewModel
     private lateinit var binding: ConverterFragmentBinding
-    private lateinit var sharedPreferences : SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
     private val gson = Gson()
     private val retrofitService = CurrencyService.getInstance()
 
-    var firstCurrency  = ""
+    var firstCurrency = ""
     var secondCurrency = ""
 
     var finalAmount: String = "0.0"
@@ -44,8 +44,12 @@ class ConverterFragment : BaseFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        viewModel = ViewModelProvider(this, ViewModelFactoryConverter(MainRepository(retrofitService)))[ConverterViewModel::class.java]
-        sharedPreferences = requireActivity().applicationContext.getSharedPreferences(TAG,   Context.MODE_PRIVATE)
+        viewModel = ViewModelProvider(
+            this,
+            ViewModelFactoryConverter(MainRepository(retrofitService))
+        )[ConverterViewModel::class.java]
+        sharedPreferences =
+            requireActivity().applicationContext.getSharedPreferences(TAG, Context.MODE_PRIVATE)
 
     }
 
@@ -58,39 +62,64 @@ class ConverterFragment : BaseFragment() {
         binding.lifecycleOwner = this
         binding.vm = viewModel
 
-        viewModelEvents()
-
-
-
+        //Fetch Values
         val isFirstRun = sharedPreferences.getBoolean("isFirstRun", true)
 
-        if (isFirstRun){
+        if (isFirstRun) {
             viewModel.getAllValues()
-        }
-        else {
-            val lastCallDateStr = sharedPreferences.getString("callDate","")
+        } else {
+            val lastCallDateStr = sharedPreferences.getString("callDate", "")
             val lastCallDate = stringDatetoDate(lastCallDateStr)
 
             val currentDate = Date()
 
             val diff: Long = (currentDate.time - lastCallDate.time) / 1000 / 60 / 60
 
-            if (diff >= 24){
+            if (diff >= 24) {
                 viewModel.getAllValues()
-            }
-            else {
-               getValuesFromShared()
+            } else {
+                getValuesFromShared()
             }
         }
+
+        //Spinners
+        val spinner1 = binding.spnFirstCountry
+        val spinner2 = binding.spnSecondCountry
+
+        val currencyList = getCurrrencyList()
+
+        spinner1.setOnTouchListener { v, event ->
+            hideKeyboard(activity as MainActivity)
+
+            v?.onTouchEvent(event) ?: true
+        }
+        spinner2.setOnTouchListener { v, event ->
+            hideKeyboard(activity as MainActivity)
+
+            v?.onTouchEvent(event) ?: true
+        }
+
+        val arrayAdapter =
+            activity?.let { ArrayAdapter(it, R.layout.simple_spinner_dropdown_item, currencyList) }
+
+        spinner1.adapter = arrayAdapter
+        spinner2.adapter = arrayAdapter
+
+
 
         return binding.root
     }
 
-    private fun viewModelEvents() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObservers()
+    }
+
+    private fun setObservers() {
 
         viewModel.currencyRates.observe(viewLifecycleOwner) {
 
-            if (viewModel.isServiceCall.value == true){
+            if (viewModel.isServiceCall.value == true) {
 
                 val json = gson.toJson(it)
                 val editor = sharedPreferences.edit()
@@ -117,15 +146,15 @@ class ConverterFragment : BaseFragment() {
             secondCurrency = it
         }
 
-        binding.etAmount.addTextChangedListener(object :TextWatcher{
+        binding.etAmount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
 
-                val inputStr  = p0.toString()
-                if (viewModel.currencyRates.value == null || inputStr.isBlank() || inputStr.toDoubleOrNull() == null){
+                val inputStr = p0.toString()
+                if (viewModel.currencyRates.value == null || inputStr.isBlank() || inputStr.toDoubleOrNull() == null) {
                     viewModel.finalValue.postValue("")
                     return
                 }
@@ -136,24 +165,24 @@ class ConverterFragment : BaseFragment() {
 
                 val list = viewModel.currencyRates.value
 
-                firstAmount = when(firstCurrency) {
-                    "USD" ->  input / list!!.USD!!
-                    "EUR" ->  input / list!!.EUR!!
-                    "TRY" ->  input / list!!.TRY!!
-                    "SEK" ->  input / list!!.SEK!!
-                    "CAD" ->  input / list!!.CAD!!
-                    "GBP" ->  input / list!!.GBP!!
-                    else  -> 0.0
+                firstAmount = when (firstCurrency) {
+                    "USD" -> input / list!!.USD!!
+                    "EUR" -> input / list!!.EUR!!
+                    "TRY" -> input / list!!.TRY!!
+                    "SEK" -> input / list!!.SEK!!
+                    "CAD" -> input / list!!.CAD!!
+                    "GBP" -> input / list!!.GBP!!
+                    else -> 0.0
                 }
 
-                val tempFinalAmount = when(secondCurrency) {
-                    "USD" ->  firstAmount * list!!.USD!!
-                    "EUR" ->  firstAmount * list!!.EUR!!
-                    "TRY" ->  firstAmount * list!!.TRY!!
-                    "SEK" ->  firstAmount * list!!.SEK!!
-                    "CAD" ->  firstAmount * list!!.CAD!!
-                    "GBP" ->  firstAmount * list!!.GBP!!
-                    else  -> 0.0
+                val tempFinalAmount = when (secondCurrency) {
+                    "USD" -> firstAmount * list!!.USD!!
+                    "EUR" -> firstAmount * list!!.EUR!!
+                    "TRY" -> firstAmount * list!!.TRY!!
+                    "SEK" -> firstAmount * list!!.SEK!!
+                    "CAD" -> firstAmount * list!!.CAD!!
+                    "GBP" -> firstAmount * list!!.GBP!!
+                    else -> 0.0
                 }
 
                 val df = DecimalFormat("#.##")
@@ -169,40 +198,20 @@ class ConverterFragment : BaseFragment() {
 
         })
 
-        binding.btnConvert.setOnClickListener(View.OnClickListener {
+        binding.btnConvert.setOnClickListener {
             hideKeyboard(activity as MainActivity)
             binding.etAmount.clearFocus()
 
-            var popUpText = "You are about to get $finalAmount $secondCurrency for ${binding.etAmount.text.toString().trim()} $firstCurrency. Do you approve?"
-
+            val input = binding.etAmount.text.toString().trim()
 
             val action = ConverterFragmentDirections.actionConfirmDialog()
-            action.title = popUpText
+            action.firstCurrency = firstCurrency
+            action.secondCurrency = secondCurrency
+            action.firstValue = input
+            action.secondValue = finalAmount
+
             findNavController().navigate(action)
-        })
-
-        val spinner1 = binding.spnFirstCountry
-        val spinner2 = binding.spnSecondCountry
-
-        val currencyList = getCurrrencyList()
-
-        spinner1.setOnTouchListener { v, event ->
-            hideKeyboard(activity as MainActivity)
-
-            v?.onTouchEvent(event) ?: true
         }
-        spinner2.setOnTouchListener { v, event ->
-            hideKeyboard(activity as MainActivity)
-
-            v?.onTouchEvent(event) ?: true
-        }
-
-        val arrayAdapter =
-            activity?.let { ArrayAdapter(it, R.layout.simple_spinner_dropdown_item, currencyList) }
-
-        spinner1.adapter = arrayAdapter
-        spinner2.adapter = arrayAdapter
-
 
     }
 
@@ -219,7 +228,8 @@ class ConverterFragment : BaseFragment() {
 
 }
 
-class ViewModelFactoryConverter(private val mainRepository: MainRepository) : ViewModelProvider.Factory {
+class ViewModelFactoryConverter(private val mainRepository: MainRepository) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return ConverterViewModel(mainRepository) as T
     }

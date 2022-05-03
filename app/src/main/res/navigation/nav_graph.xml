@@ -23,10 +23,53 @@
         android:label="ConfirmationDialogFragment"
         tools:layout="@layout/confirmation_dialog_fragment" >
         <argument
-            android:name="title"
+            android:name="firstCurrency"
             android:defaultValue=""
             app:argType="string" />
+        <argument
+            android:name="secondCurrency"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="firstValue"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="secondValue"
+            android:defaultValue=""
+            app:argType="string" />
+
+        <action
+            android:id="@+id/action_success"
+            app:destination="@id/successFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </dialog>
+
+    <fragment
+        android:id="@+id/successFragment"
+        android:name="com.orfa.exchangeconverter.ui.success.SuccessFragment"
+        android:label="SuccessFragment Fragment"
+        tools:layout="@layout/success_fragment">
+        <argument
+            android:name="firstCurrency"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="secondCurrency"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="firstValue"
+            android:defaultValue=""
+            app:argType="string" />
+        <argument
+            android:name="secondValue"
+            android:defaultValue=""
+            app:argType="string" />
+    </fragment>
 
 
 

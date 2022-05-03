@@ -1,7 +1,9 @@
 package com.orfa.exchangeconverter.ui.confirmation
 
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.Nullable
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -29,7 +31,10 @@ class ConfirmationDialogFragment : DialogFragment() {
         binding.lifecycleOwner = this
         binding.vm = viewModel
 
-        viewModel.title.postValue(args.title)
+        val popUpText =
+            "You are about to get ${args.secondValue} ${args.secondCurrency} for ${args.firstValue} ${args.secondCurrency}. Do you approve?"
+
+        viewModel.title.postValue(popUpText)
 
         return binding.root
     }
@@ -52,19 +57,27 @@ class ConfirmationDialogFragment : DialogFragment() {
     private fun setObservers() {
 
         viewModel.isCancelled.observe(viewLifecycleOwner) {
-            if (it){
+            if (it) {
                 viewModel.isCancelled.postValue(false)
                 dismissAllowingStateLoss()
             }
         }
 
         viewModel.navigateNext.observe(viewLifecycleOwner) {
-            if (it){
+            if (it) {
+                viewModel.navigateNext.postValue(false)
 
+                val action = ConfirmationDialogFragmentDirections.actionSuccess()
+                action.firstValue = args.firstValue
+                action.firstCurrency = args.firstCurrency
+                action.secondValue = args.secondValue
+                action.secondCurrency = args.secondCurrency
+
+                dismissAllowingStateLoss()
+                findNavController().navigate(action)
             }
         }
     }
-
 
 
 }

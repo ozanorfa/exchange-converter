@@ -31,7 +31,6 @@ open class BaseFragment() : Fragment() {
                 findNavController().navigateUp()
             }
         })
-
     }
 
 

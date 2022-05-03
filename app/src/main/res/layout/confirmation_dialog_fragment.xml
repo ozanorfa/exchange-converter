@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:gravity="center"
-            android:text="Confirm Operation"
+            android:text="@string/confirm_operation"
             android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,7 +39,8 @@
             android:maxLines="3"
             android:text="@={vm.title}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title" />
+            app:layout_constraintTop_toBottomOf="@id/title"
+            android:importantForAutofill="no" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/materialButtonConfirm"
@@ -47,7 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:onClick="@{ () -> vm.onSubmit()}"
-            android:text="Confirm"
+            android:text="@string/confirm"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/materialButtonCancel"
@@ -59,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:onClick="@{ () -> vm.onCancel()}"
-            android:text="Cancel"
+            android:text="@string/cancel"
             app:layout_constraintEnd_toStartOf="@+id/materialButtonConfirm"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"

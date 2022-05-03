@@ -4,16 +4,10 @@ import android.view.View
 import android.widget.AdapterView
 import androidx.lifecycle.MutableLiveData
 import com.orfa.exchangeconverter.data.ConversionRates
-import com.orfa.exchangeconverter.data.CurrencyResponse
 import com.orfa.exchangeconverter.data.getCurrencyWithId
-import com.orfa.exchangeconverter.data.getCurrrencyList
-import com.orfa.exchangeconverter.models.CurrencyService
 import com.orfa.exchangeconverter.models.MainRepository
 import com.orfa.exchangeconverter.ui.base.BaseViewModel
 import kotlinx.coroutines.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class ConverterViewModel(private val repository: MainRepository) : BaseViewModel() {
 
