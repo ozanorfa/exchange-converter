@@ -26,10 +26,10 @@
 
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="22dp"
                 android:text="@string/currency_converter"
                 android:textColor="@color/main_blue"
                 android:textSize="30sp"
@@ -52,7 +52,7 @@
                 app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintRight_toLeftOf="@+id/spnSecondCountry"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView"
+                app:layout_constraintTop_toBottomOf="@+id/tv_title"
                 tools:setOnItemSelectedListener="@{vm.spinner1Listener}" />
 
 

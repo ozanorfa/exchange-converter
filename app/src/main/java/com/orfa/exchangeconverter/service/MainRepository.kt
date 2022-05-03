@@ -1,6 +1,4 @@
-package com.orfa.exchangeconverter.models
-
-import java.util.*
+package com.orfa.exchangeconverter.service
 
 class MainRepository constructor(private val currencyService: CurrencyService) {
 

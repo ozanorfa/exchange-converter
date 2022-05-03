@@ -42,7 +42,7 @@ class SuccessFragment : BaseFragment() {
             "${args.firstValue} ${args.firstCurrency} = ${args.secondValue} ${args.secondCurrency}"
         viewModel.title.postValue(shownText)
 
-        binding.btnApprove.setOnClickListener{
+        binding.btnApprove.setOnClickListener {
 
             findNavController().setGraph(R.navigation.nav_graph)
         }

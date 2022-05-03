@@ -5,7 +5,7 @@ import android.widget.AdapterView
 import androidx.lifecycle.MutableLiveData
 import com.orfa.exchangeconverter.data.ConversionRates
 import com.orfa.exchangeconverter.data.getCurrencyWithId
-import com.orfa.exchangeconverter.models.MainRepository
+import com.orfa.exchangeconverter.service.MainRepository
 import com.orfa.exchangeconverter.ui.base.BaseViewModel
 import kotlinx.coroutines.*
 
@@ -48,6 +48,8 @@ class ConverterViewModel(private val repository: MainRepository) : BaseViewModel
             finalValue.postValue("")
         }
     }
+
+
 
     fun getAllValues() {
 

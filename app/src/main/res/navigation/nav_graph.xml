@@ -2,8 +2,8 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    app:startDestination="@+id/converterFragment"
-    android:id="@+id/nav_graph">
+    android:id="@+id/nav_graph"
+    app:startDestination="@+id/converterFragment">
 
     <fragment
         android:id="@+id/converterFragment"
@@ -14,14 +14,14 @@
             android:id="@+id/action_confirm_dialog"
             app:destination="@id/ConfirmDialogFragment"
             app:exitAnim="@anim/slide_out_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
 
     <dialog
         android:id="@+id/ConfirmDialogFragment"
         android:name="com.orfa.exchangeconverter.ui.confirmation.ConfirmationDialogFragment"
         android:label="ConfirmationDialogFragment"
-        tools:layout="@layout/confirmation_dialog_fragment" >
+        tools:layout="@layout/confirmation_dialog_fragment">
         <argument
             android:name="firstCurrency"
             android:defaultValue=""
@@ -45,7 +45,7 @@
             app:enterAnim="@anim/slide_in_right"
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
-            app:popExitAnim="@anim/slide_out_right"/>
+            app:popExitAnim="@anim/slide_out_right" />
     </dialog>
 
     <fragment
@@ -70,8 +70,6 @@
             android:defaultValue=""
             app:argType="string" />
     </fragment>
-
-
 
 
 </navigation>

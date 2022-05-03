@@ -19,8 +19,8 @@ import com.orfa.exchangeconverter.MainActivity
 import com.orfa.exchangeconverter.data.ConversionRates
 import com.orfa.exchangeconverter.data.getCurrrencyList
 import com.orfa.exchangeconverter.databinding.ConverterFragmentBinding
-import com.orfa.exchangeconverter.models.CurrencyService
-import com.orfa.exchangeconverter.models.MainRepository
+import com.orfa.exchangeconverter.service.CurrencyService
+import com.orfa.exchangeconverter.service.MainRepository
 import com.orfa.exchangeconverter.ui.base.BaseFragment
 import java.text.DecimalFormat
 import java.util.*
@@ -105,8 +105,6 @@ class ConverterFragment : BaseFragment() {
         spinner1.adapter = arrayAdapter
         spinner2.adapter = arrayAdapter
 
-
-
         return binding.root
     }
 
@@ -133,22 +131,18 @@ class ConverterFragment : BaseFragment() {
 
         viewModel.errorMessage.observe(viewLifecycleOwner) {
 
-
         }
 
         viewModel.selectedFirstCur.observe(viewLifecycleOwner) {
-
             firstCurrency = it
         }
 
         viewModel.selectedSecondCur.observe(viewLifecycleOwner) {
-
             secondCurrency = it
         }
 
         binding.etAmount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -160,9 +154,7 @@ class ConverterFragment : BaseFragment() {
                 }
 
                 val firstAmount: Double
-
                 val input = inputStr.toDouble()
-
                 val list = viewModel.currencyRates.value
 
                 firstAmount = when (firstCurrency) {
@@ -189,11 +181,9 @@ class ConverterFragment : BaseFragment() {
                 finalAmount = df.format(tempFinalAmount).toString()
 
                 viewModel.finalValue.postValue("Final Amount: $finalAmount $secondCurrency")
-
             }
 
             override fun afterTextChanged(p0: Editable?) {
-
             }
 
         })
@@ -221,7 +211,6 @@ class ConverterFragment : BaseFragment() {
 
         val json: String? = sharedPreferences.getString("conversionObj", "")
         val obj: ConversionRates = gson.fromJson(json, ConversionRates::class.java)
-
 
         viewModel.currencyRates.postValue(obj)
     }

@@ -15,4 +15,5 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp() =
         Navigation.findNavController(this, R.id.fragment_container_view).navigateUp()
 
+
 }

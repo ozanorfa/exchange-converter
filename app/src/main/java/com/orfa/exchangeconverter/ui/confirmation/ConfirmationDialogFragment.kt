@@ -32,7 +32,7 @@ class ConfirmationDialogFragment : DialogFragment() {
         binding.vm = viewModel
 
         val popUpText =
-            "You are about to get ${args.secondValue} ${args.secondCurrency} for ${args.firstValue} ${args.secondCurrency}. Do you approve?"
+            "You are about to get ${args.secondValue} ${args.secondCurrency} for ${args.firstValue} ${args.firstCurrency}. Do you approve?"
 
         viewModel.title.postValue(popUpText)
 

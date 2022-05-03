@@ -1,8 +1,6 @@
-package com.orfa.exchangeconverter.models
+package com.orfa.exchangeconverter.service
 
 import com.orfa.exchangeconverter.data.CurrencyResponse
-import okhttp3.ResponseBody
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
